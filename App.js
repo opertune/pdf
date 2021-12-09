@@ -52,7 +52,11 @@ export default function App() {
         }
       </View>
       {
-        [editedPdf] != '' && <View style={styles.pdf}><PDFReader source={{ base64: editedPdf }} /></View>
+        [editedPdf] != '' && <View style={styles.pdf}>
+          <PDFReader
+           source={{ base64: editedPdf }}
+          />
+          </View>
       }
     </View>
     </>
@@ -70,21 +74,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    ...Platform.select({
-      ios: {
-        marginTop: '10%'
-      },
-      android: {
-        marginTop: '5%'
-      },
-    })
-    
+    marginTop: '10%',
   },
   text: {
     color: 'white',
   },
   pdf: {
-    marginTop: 25,
+    position: 'absolute',
+    marginTop: '25%',
     height: '70%',
     width: '90%',
     backgroundColor: 'white',
