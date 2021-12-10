@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 
-class MyButton extends Component {
+export class MyButton extends Component {
     constructor() {
         super()
     }
@@ -14,5 +14,3 @@ class MyButton extends Component {
         );
     }
 }
-
-export default MyButton
