@@ -1,15 +1,17 @@
-import React, { useRef, useState } from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
-import * as DocumentPicker from 'expo-document-picker';
-import PDFReader from 'rn-pdf-reader-js';
-import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import * as FileSystem from 'expo-file-system';
-import { MyButton, MyBuffer } from './src/component';
-import MovableView from 'react-native-movable-view';
+import React, { useRef, useState } from 'react'
+import { StyleSheet, Text, View, Dimensions } from 'react-native'
+import * as DocumentPicker from 'expo-document-picker'
+import PDFReader from 'rn-pdf-reader-js'
+import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib'
+import * as FileSystem from 'expo-file-system'
+import { MyButton, MyBuffer } from './src/component'
+import MovableView from 'react-native-movable-view'
 
 export default function App() {
-  const [pdfBase64, setPdfBase64] = useState('');
-  const [editedPdf, setEditedPdf] = useState('');
+  const [pdfBase64, setPdfBase64] = useState('')
+  const [editedPdf, setEditedPdf] = useState('')
+  const [pdfXPos, setPdfXPos] = useState('')
+  const [pdfYPos, setPdfYPos] = useState('')
 
   const pickDocument = async () => {
     let result = await DocumentPicker.getDocumentAsync({ type: "application/pdf" })
@@ -56,18 +58,21 @@ export default function App() {
         <View style={styles.btnContainer}>
           <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Import PDF" onPress={pickDocument} />
         </View>
-        <MyBuffer/>
         {
-          pdfBase64 ?
+          !pdfBase64 ? null :
             <View style={styles.containerPdf}>
-              <Text style={styles.importText}>Place the square and resize him where you want add your sign.</Text>
-              <View style={styles.pdf}>
+              <Text style={styles.importText}>Place the blue square and resize him where you want add your sign.</Text>
+              <View style={styles.pdf} onLayout={event => {
+                const layout = event.nativeEvent.layout
+                setPdfXPos(layout.width)
+                setPdfYPos(layout.height)
+              }}>
                 <PDFReader
                   source={{ base64: 'data:application/pdf;base64,' + pdfBase64 }}
                 />
+                <MyBuffer x={pdfXPos} y={pdfYPos} />
               </View>
             </View>
-            : null
         }
       </View>
     </>
