@@ -2,9 +2,7 @@ import { values } from "pdf-lib";
 import React, { useRef } from "react";
 import { Animated, View, StyleSheet, PanResponder, Dimensions } from "react-native";
 
-export const MyBuffer = (props) => {
-  const x = props.x
-  const y = props.y
+export const MyBuffer = () => {
   const pan = useRef(new Animated.ValueXY(0)).current;
   
   const panResponder = useRef(
