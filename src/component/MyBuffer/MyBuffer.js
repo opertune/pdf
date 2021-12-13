@@ -1,8 +1,7 @@
-import { values } from "pdf-lib";
-import React, { useRef } from "react";
-import { Animated, View, StyleSheet, PanResponder, Dimensions } from "react-native";
+import React, { useRef, useState } from "react";
+import { Animated, View, StyleSheet, PanResponder, Dimensions, Platform } from "react-native";
 
-export const MyBuffer = () => {
+export const MyBuffer = (props) => {
   const pan = useRef(new Animated.ValueXY(0)).current;
   
   const panResponder = useRef(
@@ -27,19 +26,40 @@ export const MyBuffer = () => {
       }
     })
   ).current;
-
-  return (
-    <View style={styles.container}>
-      <Animated.View
-        style={{transform: [{translateX: pan.x.interpolate({
-          inputRange: [-125, Dimensions.get('window').width - (Dimensions.get('window').width / 1.45)],
-          outputRange: [-125, Dimensions.get('window').width - (Dimensions.get('window').width / 1.45)],
+  
+  const AnimatedViewStyle = () => {
+    if(Platform.OS === 'ios'){
+      return {
+        transform: [{translateX: pan.x.interpolate({
+          inputRange: [props.width-1.31*props.width, props.width-0.70*props.width], // android : [props.width-1.3*props.width, props.width-0.71*props.width]
+          outputRange: [props.width-1.31*props.width, props.width-0.70*props.width], // ios : [props.width-1.31*props.width, props.width-0.70*props.width]
           extrapolate: 'clamp'
         })}, {translateY: pan.y.interpolate({
-          inputRange: [0, Dimensions.get('window').height - (Dimensions.get('window').height / 2.1)],
-          outputRange: [0, Dimensions.get('window').height - (Dimensions.get('window').height) / 2.1],
+          inputRange: [props.height-0.98*props.height, props.height-0.29*props.height], // android : [props.height-0.93*props.height, props.height-0.29*props.height]
+          outputRange: [props.height-0.98*props.height, props.height-0.29*props.height], // ios : [props.height-0.98*props.height, props.height-0.29*props.height]
           extrapolate: 'clamp'
-        })}]}}
+        })}]
+      }
+    }else if(Platform.OS === 'android'){
+      return {
+        transform: [{translateX: pan.x.interpolate({
+          inputRange: [props.width-1.3*props.width, props.width-0.71*props.width], // android : [props.width-1.3*props.width, props.width-0.71*props.width]
+          outputRange: [props.width-1.3*props.width, props.width-0.71*props.width], // ios : [props.width-1.31*props.width, props.width-0.70*props.width]
+          extrapolate: 'clamp'
+        })}, {translateY: pan.y.interpolate({
+          inputRange: [props.height-0.93*props.height, props.height-0.29*props.height], // android : [props.height-0.93*props.height, props.height-0.29*props.height]
+          outputRange: [props.height-0.93*props.height, props.height-0.29*props.height], // ios : [props.height-0.98*props.height, props.height-0.29*props.height]
+          extrapolate: 'clamp'
+        })}]
+      }
+    }
+  }
+
+  return (
+    (!props.width && !props.height) ? null :
+    <View style={styles.container}>
+      <Animated.View
+        style={AnimatedViewStyle()}
         {...panResponder.panHandlers}
       >
         <View style={styles.box} />

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React from 'react'
 import { StyleSheet, Text, View, Dimensions } from 'react-native'
 import * as DocumentPicker from 'expo-document-picker'
 import PDFReader from 'rn-pdf-reader-js'
@@ -7,13 +7,14 @@ import * as FileSystem from 'expo-file-system'
 import { MyButton, MyBuffer } from '../component'
 import { Component } from 'react/cjs/react.production.min'
 
-
 export default class Home extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
-        pdfBase64: null,
-        editedPdf: null,
+      pdfBase64: null,
+      editedPdf: null,
+      pdfHeight: null,
+      pdfWidth: null,
     }
   }
 
@@ -59,34 +60,42 @@ export default class Home extends Component {
       })
     }
   }
+  
+  layout = (event) => {
+    const { height, width } = event.nativeEvent.layout
+    this.setState({
+      pdfHeight: height,
+      pdfWidth: width,
+    })
+  }
+
 
   render() {
     return (
-        <>
-          <View style={styles.container}>
-            <View style={styles.btnContainer}>
-              <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Import PDF" onPress={this.pickDocument} />
-            </View>
-            {
-              !this.state.pdfBase64 ? null :
-                <View style={styles.containerPdf}>
-                  <Text style={styles.importText}>Place the blue square and resize him where you want add your signature.</Text>
-                  <View style={styles.pdf} onLayout={event => {
-                    const layout = event.nativeEvent.layout
-                  }}>
-                    <PDFReader
-                      source={{ base64: 'data:application/pdf;base64,' + this.state.pdfBase64 }}
-                    />
-                    {
-                      !this.state.pdfBase64 ? null : <MyButton btnStyles={styles.btnSaveStyle} btnText={styles.btnStyleText} text="Sign and Save!" onPress={() => console.log('sign and Save')} />
-                    }
-                    <MyBuffer/>
-                  </View>
-                </View>
-            }
+      <>
+        <View style={styles.container}>
+          <View style={styles.btnContainer}>
+            <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Create Signature" onPress={() => this.props.navigation.navigate('Signature')}/>
+            <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Import PDF" onPress={this.pickDocument} />
           </View>
-        </>
-      );
+          {
+            !this.state.pdfBase64 ? null :
+              <View style={styles.containerPdf}>
+                <Text style={styles.importText}>Place the blue square and resize him where you want add your signature.</Text>
+                <View style={styles.pdf} onLayout={this.layout}>
+                  <PDFReader
+                    source={{ base64: 'data:application/pdf;base64,' + this.state.pdfBase64 }}
+                  />
+                  {
+                    !this.state.pdfBase64 ? null : <MyButton btnStyles={styles.btnSaveStyle} btnText={styles.btnStyleText} text="Sign and Save!" onPress={() => console.log('sign and Save')} />
+                  }
+                  <MyBuffer height={this.state.pdfHeight} width={this.state.pdfWidth} />
+                </View>
+              </View>
+          }
+        </View>
+      </>
+    )
   }
 }
 
