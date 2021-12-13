@@ -1,23 +1,40 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { StyleSheet, Text, View, Dimensions } from 'react-native'
 import { MyButton } from '../component'
 import { Component } from 'react/cjs/react.production.min'
+import Signature from "react-native-signature-canvas";
 
 export default class CreateSignature extends Component {
     constructor() {
         super()
+        this.ref = React.createRef()
+        this.state = {
+            canvasStyle: null,
+        }
+    }
+    handleClear = () => {
+        this.ref.current.clearSignature()
+    }
+    handleSave = () => {
+        console.log('handleSave')
     }
 
+    viewHeight = (event) => {
+        const { height } = event.nativeEvent.layout
+        this.setState({
+            canvasStyle: '.m-signature-pad--footer {display: none;} .m-signature-pad { height: ' + height + 'px; top: 0%;}'
+        })
+    }
     render() {
         return (
-            <View style={styles.container}>
+            <View style={styles.container} >
                 <View style={styles.btnContainer}>
                     <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Home" onPress={() => this.props.navigation.navigate('Home')} />
-                    <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Save" onPress={() => console.log('Save')} />
-                    <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Clear" onPress={() => console.log('Clear')} />
+                    <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Save" onPress={this.handleSave} />
+                    <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Clear" onPress={this.handleClear} />
                 </View>
-                <View style={styles.signatureContainer}>
-
+                <View style={styles.signatureContainer} onLayout={this.viewHeight}>
+                    {this.state.canvasStyle && <Signature ref={this.ref} webStyle={this.state.canvasStyle} />}
                 </View>
             </View>
         )
