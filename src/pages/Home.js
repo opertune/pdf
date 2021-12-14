@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, Image } from 'react-native'
 import * as DocumentPicker from 'expo-document-picker'
 import PDFReader from 'rn-pdf-reader-js'
 import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib'
@@ -69,7 +69,7 @@ export default class Home extends Component {
     })
   }
 
-
+// {!this.props.route.params ? null : <Image style={styles.img} source={{uri: this.props.route.params.image}}/>}
   render() {
     return (
       <>
@@ -89,7 +89,7 @@ export default class Home extends Component {
                   {
                     !this.state.pdfBase64 ? null : <MyButton btnStyles={styles.btnSaveStyle} btnText={styles.btnStyleText} text="Sign and Save!" onPress={() => console.log('sign and Save')} />
                   }
-                  <MyBuffer height={this.state.pdfHeight} width={this.state.pdfWidth} />
+                  {!this.props.route.params ? null : <MyBuffer height={this.state.pdfHeight} width={this.state.pdfWidth} imgUri={this.props.route.params.image}/>}
                 </View>
               </View>
           }

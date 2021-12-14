@@ -5,26 +5,28 @@ import { Component } from 'react/cjs/react.production.min'
 import Signature from "react-native-signature-canvas";
 
 export default class CreateSignature extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.ref = React.createRef()
         this.state = {
             canvasStyle: null,
+            imgPath: null
         }
+        //console.log('Signature props: ', this.props)
     }
     handleClear = () => {
         this.ref.current.clearSignature()
     }
     handleSave = () => {
-        console.log('handleSave')
+        this.ref.current.readSignature()
     }
-
     viewHeight = (event) => {
         const { height } = event.nativeEvent.layout
         this.setState({
             canvasStyle: '.m-signature-pad--footer {display: none;} .m-signature-pad { height: ' + height + 'px; top: 0%;}'
         })
     }
+
     render() {
         return (
             <View style={styles.container} >
@@ -34,7 +36,7 @@ export default class CreateSignature extends Component {
                     <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Clear" onPress={this.handleClear} />
                 </View>
                 <View style={styles.signatureContainer} onLayout={this.viewHeight}>
-                    {this.state.canvasStyle && <Signature ref={this.ref} webStyle={this.state.canvasStyle} />}
+                    {!this.state.canvasStyle ? null : <Signature ref={this.ref} minWidth={2} maxWidth={2} webStyle={this.state.canvasStyle} onOK={(img) => this.setState({imgPath: img}, () => this.props.navigation.navigate('Home',{image: this.state.imgPath}))}/>}
                 </View>
             </View>
         )
@@ -88,5 +90,5 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderColor: 'black',
         borderWidth: 2,
-    }
+    },
 })
