@@ -12,7 +12,6 @@ export default class CreateSignature extends Component {
             canvasStyle: null,
             imgPath: null
         }
-        //console.log('Signature props: ', this.props)
     }
     handleClear = () => {
         this.ref.current.clearSignature()
@@ -36,7 +35,7 @@ export default class CreateSignature extends Component {
                     <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Clear" onPress={this.handleClear} />
                 </View>
                 <View style={styles.signatureContainer} onLayout={this.viewHeight}>
-                    {!this.state.canvasStyle ? null : <Signature ref={this.ref} minWidth={2} maxWidth={2} webStyle={this.state.canvasStyle} onOK={(img) => this.setState({imgPath: img}, () => this.props.navigation.navigate('Home',{image: this.state.imgPath}))}/>}
+                    {!this.state.canvasStyle ? null : <Signature ref={this.ref} minWidth={2} maxWidth={2} webStyle={this.state.canvasStyle} onOK={(img) => this.setState({ imgPath: img }, () => this.props.navigation.navigate('Home', { image: this.state.imgPath }))} />}
                 </View>
             </View>
         )
@@ -51,21 +50,14 @@ const styles = StyleSheet.create({
     },
     btnContainer: {
         flex: 1,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
-        marginTop: '10%',
+        flexDirection: 'column',
+        alignSelf: 'flex-start',
+        right: '5%',
+        justifyContent: 'space-evenly'
     },
     text: {
         textAlign: 'center',
         color: 'white',
-    },
-    btnContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
-        marginTop: '10%',
     },
     btnStyle: {
         backgroundColor: '#75a927',
@@ -76,17 +68,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 10,
         marginRight: 5,
+        transform: [{ rotate: '90deg' }]
     },
     btnStyleText: {
         textAlign: 'center',
         fontSize: 18,
         color: 'black',
+        transform: [{ rotate: '180deg' }]
     },
     signatureContainer: {
         position: 'absolute',
-        marginTop: '26%',
-        width: '98%',
-        height: '86%',
+        marginTop: '10%',
+        right: '2%',
+        width: '80%',
+        height: '90%',
         backgroundColor: 'white',
         borderColor: 'black',
         borderWidth: 2,

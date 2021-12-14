@@ -1,7 +1,10 @@
 import React, { useRef, useState } from "react";
 import { Animated, View, StyleSheet, PanResponder, Dimensions, Platform, Image } from "react-native";
+import { PinchGestureHandler } from 'react-native-gesture-handler';
+
 
 export const MyBuffer = (props) => {
+  const [scale, setScale] = useState(1)
   const pan = useRef(new Animated.ValueXY(0)).current;
 
   const panResponder = useRef(
@@ -32,14 +35,14 @@ export const MyBuffer = (props) => {
       return {
         transform: [{
           translateX: pan.x.interpolate({
-            inputRange: [props.width - 1.31 * props.width, props.width - 0.70 * props.width], // android : [props.width-1.3*props.width, props.width-0.71*props.width]
-            outputRange: [props.width - 1.31 * props.width, props.width - 0.70 * props.width], // ios : [props.width-1.31*props.width, props.width-0.70*props.width]
+            inputRange: [props.width - 1.31 * props.width, props.width - 0.70 * props.width],
+            outputRange: [props.width - 1.31 * props.width, props.width - 0.70 * props.width],
             extrapolate: 'clamp'
           })
         }, {
           translateY: pan.y.interpolate({
-            inputRange: [props.height - 0.98 * props.height, props.height - 0.29 * props.height], // android : [props.height-0.93*props.height, props.height-0.29*props.height]
-            outputRange: [props.height - 0.98 * props.height, props.height - 0.29 * props.height], // ios : [props.height-0.98*props.height, props.height-0.29*props.height]
+            inputRange: [props.height - 0.98 * props.height, props.height - 0.29 * props.height],
+            outputRange: [props.height - 0.98 * props.height, props.height - 0.29 * props.height],
             extrapolate: 'clamp'
           })
         }]
@@ -48,14 +51,14 @@ export const MyBuffer = (props) => {
       return {
         transform: [{
           translateX: pan.x.interpolate({
-            inputRange: [props.width - 1.3 * props.width, props.width - 0.71 * props.width], // android : [props.width-1.3*props.width, props.width-0.71*props.width]
-            outputRange: [props.width - 1.3 * props.width, props.width - 0.71 * props.width], // ios : [props.width-1.31*props.width, props.width-0.70*props.width]
+            inputRange: [props.width - 1.3 * props.width, props.width - 0.71 * props.width],
+            outputRange: [props.width - 1.3 * props.width, props.width - 0.71 * props.width],
             extrapolate: 'clamp'
           })
         }, {
           translateY: pan.y.interpolate({
-            inputRange: [props.height - 0.93 * props.height, props.height - 0.29 * props.height], // android : [props.height-0.93*props.height, props.height-0.29*props.height]
-            outputRange: [props.height - 0.93 * props.height, props.height - 0.29 * props.height], // ios : [props.height-0.98*props.height, props.height-0.29*props.height]
+            inputRange: [props.height - 0.93 * props.height, props.height - 0.29 * props.height],
+            outputRange: [props.height - 0.93 * props.height, props.height - 0.29 * props.height],
             extrapolate: 'clamp'
           })
         }]
@@ -63,6 +66,13 @@ export const MyBuffer = (props) => {
     }
   }
 
+  const onPinchGestureEvent = (event) => {
+    if(event.nativeEvent.scale > 1){
+      setScale(event.nativeEvent.scale)
+    }else{
+      setScale(1)
+    }
+  }
   return (
     (!props.width && !props.height) ? null :
       <View style={styles.container}>
@@ -70,11 +80,20 @@ export const MyBuffer = (props) => {
           style={AnimatedViewStyle()}
           {...panResponder.panHandlers}
         >
-          <View style={styles.box}>
-            <Image style={{ width: '100%', height: '100%', resizeMode: 'contain', transform: [{ rotate: '90deg'}]}} source={{ uri: props.imgUri }} />
-          </View>
+          <PinchGestureHandler onGestureEvent={onPinchGestureEvent}>
+            <Animated.Image style={{
+                  borderColor: 'black',
+                  borderWidth: 1,
+                  backgroundColor: '#44FFD180',
+                  opacity: 1,
+                  width: Dimensions.get('window').height / 12,
+                  height: Dimensions.get('window').width / 3.5,
+                  resizeMode: 'contain',
+                  transform: [{rotate: '90deg'}, {scale: scale}]
+            }} source={{ uri: props.imgUri }} />
+          </PinchGestureHandler>
         </Animated.View>
-      </View>
+      </View >
   );
 }
 
@@ -85,12 +104,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
-  box: {
-    height: Dimensions.get('window').height / 12,
-    width: Dimensions.get('window').width / 3.5,
-    backgroundColor: "aqua",
-    opacity: 0.3,
-    borderRadius: 5,
-    borderWidth: 2,
+  signature: {
+
   }
 });

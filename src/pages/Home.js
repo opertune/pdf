@@ -7,6 +7,8 @@ import * as FileSystem from 'expo-file-system'
 import { MyButton, MyBuffer } from '../component'
 import { Component } from 'react/cjs/react.production.min'
 
+
+
 export default class Home extends Component {
   constructor(props) {
     super(props)
@@ -69,13 +71,12 @@ export default class Home extends Component {
     })
   }
 
-// {!this.props.route.params ? null : <Image style={styles.img} source={{uri: this.props.route.params.image}}/>}
   render() {
     return (
       <>
         <View style={styles.container}>
           <View style={styles.btnContainer}>
-            <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Create Signature" onPress={() => this.props.navigation.navigate('Signature')}/>
+            <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="New Signature" onPress={() => this.props.navigation.navigate('Signature')}/>
             <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Import PDF" onPress={this.pickDocument} />
           </View>
           {
