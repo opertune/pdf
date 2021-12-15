@@ -35,14 +35,14 @@ export const MyBuffer = (props) => {
       return {
         transform: [{
           translateX: pan.x.interpolate({
-            inputRange: [props.width - 1.31 * props.width, props.width - 0.70 * props.width],
-            outputRange: [props.width - 1.31 * props.width, props.width - 0.70 * props.width],
+            inputRange: [props.width - 1.30 * props.width, props.width - 0.60 * props.width],
+            outputRange: [props.width - 1.30 * props.width, props.width - 0.60 * props.width],
             extrapolate: 'clamp'
           })
         }, {
           translateY: pan.y.interpolate({
-            inputRange: [props.height - 0.98 * props.height, props.height - 0.29 * props.height],
-            outputRange: [props.height - 0.98 * props.height, props.height - 0.29 * props.height],
+            inputRange: [props.height - 1.035 * props.height, props.height - 0.245 * props.height],
+            outputRange: [props.height - 1.035 * props.height, props.height - 0.245 * props.height],
             extrapolate: 'clamp'
           })
         }]
@@ -51,14 +51,14 @@ export const MyBuffer = (props) => {
       return {
         transform: [{
           translateX: pan.x.interpolate({
-            inputRange: [props.width - 1.3 * props.width, props.width - 0.71 * props.width],
-            outputRange: [props.width - 1.3 * props.width, props.width - 0.71 * props.width],
+            inputRange: [props.width - 1.28 * props.width, props.width - 0.59 * props.width],
+            outputRange: [props.width - 1.28 * props.width, props.width - 0.59 * props.width],
             extrapolate: 'clamp'
           })
         }, {
           translateY: pan.y.interpolate({
-            inputRange: [props.height - 0.93 * props.height, props.height - 0.29 * props.height],
-            outputRange: [props.height - 0.93 * props.height, props.height - 0.29 * props.height],
+            inputRange: [props.height - 1.045 * props.height, props.height - 0.245 * props.height],
+            outputRange: [props.height - 1.045 * props.height, props.height - 0.245 * props.height],
             extrapolate: 'clamp'
           })
         }]
@@ -103,8 +103,5 @@ const styles = StyleSheet.create({
     left: '35%',
     alignItems: "center",
     justifyContent: "center"
-  },
-  signature: {
-
   }
 });
