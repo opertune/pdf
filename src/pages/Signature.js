@@ -28,7 +28,7 @@ export default class CreateSignature extends Component {
 
     render() {
         return (
-            <View style={styles.container} >
+            <View style={styles.container}>
                 <View style={styles.btnContainer}>
                     <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Home" onPress={() => this.props.navigation.navigate('Home')} />
                     <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Save" onPress={this.handleSave} />

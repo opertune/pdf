@@ -6,6 +6,7 @@ import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib'
 import * as FileSystem from 'expo-file-system'
 import { MyButton, MyBuffer } from '../component'
 import { Component } from 'react/cjs/react.production.min'
+import { render } from 'react-dom'
 
 
 
@@ -42,18 +43,20 @@ export default class Home extends Component {
       const dataUri = 'data:application/pdf;base64,' + this.state.pdfBase64
 
       const pdfDoc = await PDFDocument.load(dataUri)
-      const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
 
       const pages = pdfDoc.getPages()
       const firstPage = pages[0]
       const { width, height } = firstPage.getSize()
-      firstPage.drawText('This text was added with JavaScript!', {
-        x: 5,
-        y: height / 2 + 300,
-        size: 50,
-        font: helveticaFont,
-        color: rgb(0.95, 0.1, 0.1),
-        rotate: degrees(-45),
+      const jpgImage = await pdfDoc.embedPng(this.props.route.params.image)
+      const jpgDims = jpgImage.scale(0.1)
+      
+      firstPage.drawImage(jpgImage, {
+        x: width / 2.5,
+        y: height / 2.5,
+        width: jpgDims.width,
+        height: jpgDims.height,
+        opacity: 1,
+        rotate: degrees(-90),
       })
 
       const pdfBytes = await pdfDoc.saveAsBase64({ dataUri: true })
@@ -62,7 +65,7 @@ export default class Home extends Component {
       })
     }
   }
-  
+
   layout = (event) => {
     const { height, width } = event.nativeEvent.layout
     this.setState({
@@ -76,7 +79,7 @@ export default class Home extends Component {
       <>
         <View style={styles.container}>
           <View style={styles.btnContainer}>
-            <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="New Signature" onPress={() => this.props.navigation.navigate('Signature')}/>
+            <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="New Signature" onPress={() => this.props.navigation.navigate('Signature')} />
             <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Import PDF" onPress={this.pickDocument} />
           </View>
           {
@@ -84,13 +87,15 @@ export default class Home extends Component {
               <View style={styles.containerPdf}>
                 <Text style={styles.importText}>Place the blue square and resize him where you want add your signature.</Text>
                 <View style={styles.pdf} onLayout={this.layout}>
-                  <PDFReader
-                    source={{ base64: 'data:application/pdf;base64,' + this.state.pdfBase64 }}
-                  />
-                  {
-                    !this.state.pdfBase64 ? null : <MyButton btnStyles={styles.btnSaveStyle} btnText={styles.btnStyleText} text="Sign and Save!" onPress={() => console.log('sign and Save')} />
+                  {!this.state.editedPdf ?
+                    <PDFReader source={{ base64: 'data:application/pdf;base64,' + this.state.pdfBase64 }}/> :
+                    <PDFReader source={{ base64: this.state.editedPdf }} />
                   }
-                  {!this.props.route.params ? null : <MyBuffer height={this.state.pdfHeight} width={this.state.pdfWidth} imgUri={this.props.route.params.image}/>}
+                  {
+                    !this.state.pdfBase64 ? null :
+                    <MyButton btnStyles={styles.btnSaveStyle} btnText={styles.btnStyleText} text="Sign and Save!" onPress={this.editPdf} />
+                  }
+                  {!this.props.route.params ? null : <MyBuffer height={this.state.pdfHeight} width={this.state.pdfWidth} imgUri={this.props.route.params.image} />}
                 </View>
               </View>
           }
