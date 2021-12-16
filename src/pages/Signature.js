@@ -1,5 +1,5 @@
-import React, { useRef } from 'react'
-import { StyleSheet, Text, View, Dimensions } from 'react-native'
+import React from 'react'
+import { StyleSheet, View, Dimensions } from 'react-native'
 import { MyButton } from '../component'
 import { Component } from 'react/cjs/react.production.min'
 import Signature from "react-native-signature-canvas";
@@ -54,10 +54,6 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         right: '5%',
         justifyContent: 'space-evenly'
-    },
-    text: {
-        textAlign: 'center',
-        color: 'white',
     },
     btnStyle: {
         backgroundColor: '#75a927',

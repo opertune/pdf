@@ -49,7 +49,7 @@ export default class Home extends Component {
       const { width, height } = firstPage.getSize()
       const jpgImage = await pdfDoc.embedPng(this.props.route.params.image)
       const jpgDims = jpgImage.scale(0.1)
-      
+
       firstPage.drawImage(jpgImage, {
         x: width / 2.5,
         y: height / 2.5,
@@ -118,9 +118,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: '10%',
   },
-  text: {
-    color: 'white',
-  },
   pdf: {
     height: '100%',
     width: '100%',
@@ -152,15 +149,6 @@ const styles = StyleSheet.create({
     marginBottom: '15%',
     width: '90%',
     height: '70%',
-  },
-  square: {
-    position: 'absolute',
-    width: Dimensions.get('window').width / 3.5,
-    height: Dimensions.get('window').height / 12,
-    backgroundColor: 'red',
-    opacity: 0.2,
-    borderWidth: 2,
-    borderColor: 'red',
   },
   btnSaveStyle: {
     backgroundColor: '#75a927',
