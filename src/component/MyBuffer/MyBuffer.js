@@ -1,12 +1,12 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { Animated, View, StyleSheet, PanResponder, Dimensions, Platform, Image } from "react-native";
 import { PinchGestureHandler } from 'react-native-gesture-handler';
 
 
 export const MyBuffer = (props) => {
   const [scale, setScale] = useState(1)
-  const pan = useRef(new Animated.ValueXY(0)).current;
 
+  const pan = useRef(new Animated.ValueXY(0)).current;
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
@@ -21,11 +21,12 @@ export const MyBuffer = (props) => {
           null,
           { dx: pan.x, dy: pan.y }
         ],
-        { useNativeDriver: false }
-
+        { useNativeDriver: false },
       ),
       onPanResponderRelease: () => {
         pan.flattenOffset();
+        //ref.current = [{posx:pan.x._value,posy: pan.y._value}]
+        //console.log('x: ', pan.x._value,' y: ',pan.y._value)
       }
     })
   ).current;
@@ -73,12 +74,13 @@ export const MyBuffer = (props) => {
       setScale(1)
     }
   }
+
   return (
     (!props.width && !props.height) ? null :
       <View style={styles.container}>
         <Animated.View
           style={AnimatedViewStyle()}
-          {...panResponder.panHandlers}
+          {...panResponder.panHandlers} onTouchEnd={() => props.handler([pan.x, pan.y])}
         >
           <PinchGestureHandler onGestureEvent={onPinchGestureEvent}>
             <Animated.Image style={{

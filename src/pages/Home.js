@@ -6,7 +6,6 @@ import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib'
 import * as FileSystem from 'expo-file-system'
 import { MyButton, MyBuffer } from '../component'
 import { Component } from 'react/cjs/react.production.min'
-import { render } from 'react-dom'
 
 
 
@@ -18,7 +17,16 @@ export default class Home extends Component {
       editedPdf: null,
       pdfHeight: null,
       pdfWidth: null,
+      bufferPosition: null,
     }
+
+    this.handler = this.handler.bind(this)
+  }
+
+  handler = (arg) => {
+    this.setState({
+      bufferPosition: arg
+    })
   }
 
   pickDocument = async () => {
@@ -34,10 +42,6 @@ export default class Home extends Component {
     }
   }
 
-  // button edit pdf
-  // {
-  //   this.state.pdfBase64 != '' && <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Edit PDF" onPress={this.editPdf}/>
-  // }
   editPdf = async () => {
     if (this.state.pdfBase64 != null) {
       const dataUri = 'data:application/pdf;base64,' + this.state.pdfBase64
@@ -51,8 +55,8 @@ export default class Home extends Component {
       const jpgDims = jpgImage.scale(0.1)
 
       firstPage.drawImage(jpgImage, {
-        x: width / 2.5,
-        y: height / 2.5,
+        x: this.state.bufferPosition[0],
+        y: this.state.bufferPosition[1],
         width: jpgDims.width,
         height: jpgDims.height,
         opacity: 1,
@@ -74,6 +78,8 @@ export default class Home extends Component {
     })
   }
 
+
+
   render() {
     return (
       <>
@@ -87,16 +93,21 @@ export default class Home extends Component {
               <View style={styles.containerPdf}>
                 <Text style={styles.importText}>Place the blue square and resize him where you want add your signature.</Text>
                 <View style={styles.pdf} onLayout={this.layout}>
-                  {!this.state.editedPdf ?
-                    <PDFReader source={{ base64: 'data:application/pdf;base64,' + this.state.pdfBase64 }}/> :
-                    <PDFReader source={{ base64: this.state.editedPdf }} />
+                  {
+                    !this.state.editedPdf ?
+                      <PDFReader source={{ base64: 'data:application/pdf;base64,' + this.state.pdfBase64 }} /> :
+                      <PDFReader source={{ base64: this.state.editedPdf }} />
+                  }
+                  {
+                    !this.props.route.params ? null :
+                    <MyBuffer height={this.state.pdfHeight} width={this.state.pdfWidth} imgUri={this.props.route.params.image} handler={this.handler} />
                   }
                   {
                     !this.state.pdfBase64 ? null :
                     <MyButton btnStyles={styles.btnSaveStyle} btnText={styles.btnStyleText} text="Sign and Save!" onPress={this.editPdf} />
                   }
-                  {!this.props.route.params ? null : <MyBuffer height={this.state.pdfHeight} width={this.state.pdfWidth} imgUri={this.props.route.params.image} />}
                 </View>
+                {!this.state.bufferPosition ? null : console.log('xPos: ', this.state.bufferPosition[0], ' yPos: ', this.state.bufferPosition[1])}
               </View>
           }
         </View>

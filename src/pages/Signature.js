@@ -35,7 +35,10 @@ export default class CreateSignature extends Component {
                     <MyButton btnStyles={styles.btnStyle} btnText={styles.btnStyleText} text="Clear" onPress={this.handleClear} />
                 </View>
                 <View style={styles.signatureContainer} onLayout={this.viewHeight}>
-                    {!this.state.canvasStyle ? null : <Signature ref={this.ref} minWidth={2} maxWidth={2} webStyle={this.state.canvasStyle} onOK={(img) => this.setState({ imgPath: img }, () => this.props.navigation.navigate('Home', { image: this.state.imgPath }))} />}
+                    {!this.state.canvasStyle ? null : 
+                    <Signature ref={this.ref} minWidth={2} maxWidth={2} webStyle={this.state.canvasStyle} onOK={
+                        (img) => this.setState({ imgPath: img }, () => this.props.navigation.navigate('Home', { image: this.state.imgPath }))
+                        }/>}
                 </View>
             </View>
         )
