@@ -8,7 +8,6 @@ import { MyButton, MyBuffer } from '../component'
 import { Component } from 'react/cjs/react.production.min'
 
 
-
 export default class Home extends Component {
   constructor(props) {
     super(props)
@@ -17,15 +16,18 @@ export default class Home extends Component {
       editedPdf: null,
       pdfHeight: null,
       pdfWidth: null,
-      bufferPosition: null,
+      bufferPositionX: null,
+      bufferPositionY: null,
     }
 
     this.handler = this.handler.bind(this)
   }
 
   handler = (arg) => {
+    console.log(arg)
     this.setState({
-      bufferPosition: arg
+      bufferPositionX: arg[0],
+      bufferPositionY: arg[1],
     })
   }
 
@@ -51,16 +53,24 @@ export default class Home extends Component {
       const pages = pdfDoc.getPages()
       const firstPage = pages[0]
       const { width, height } = firstPage.getSize()
-      const jpgImage = await pdfDoc.embedPng(this.props.route.params.image)
-      const jpgDims = jpgImage.scale(0.1)
 
-      firstPage.drawImage(jpgImage, {
-        x: this.state.bufferPosition[0],
-        y: this.state.bufferPosition[1],
-        width: jpgDims.width,
-        height: jpgDims.height,
-        opacity: 1,
-        rotate: degrees(-90),
+      // const jpgImage = await pdfDoc.embedPng(this.props.route.params.image) //<- temps d'attente ici
+      // const jpgDims = jpgImage.scale(0.1)
+
+      // firstPage.drawImage(jpgImage, {
+      //   x: this.state.bufferPositionX,
+      //   y: this.state.bufferPositionY,
+      //   width: jpgDims.width,
+      //   height: jpgDims.height,
+      //   opacity: 1,
+      //   rotate: degrees(-90),
+      // })
+
+      firstPage.drawText('[]', {
+        x: parseInt(this.state.bufferPositionX),
+        y: parseInt(this.state.bufferPositionY),
+        size: 50,
+        color: rgb(0.95, 0.1, 0.1),
       })
 
       const pdfBytes = await pdfDoc.saveAsBase64({ dataUri: true })
@@ -100,14 +110,13 @@ export default class Home extends Component {
                   }
                   {
                     !this.props.route.params ? null :
-                    <MyBuffer height={this.state.pdfHeight} width={this.state.pdfWidth} imgUri={this.props.route.params.image} handler={this.handler} />
-                  }
-                  {
-                    !this.state.pdfBase64 ? null :
-                    <MyButton btnStyles={styles.btnSaveStyle} btnText={styles.btnStyleText} text="Sign and Save!" onPress={this.editPdf} />
+                      <MyBuffer height={this.state.pdfHeight} width={this.state.pdfWidth} imgUri={this.props.route.params.image} handler={this.handler} />
                   }
                 </View>
-                {!this.state.bufferPosition ? null : console.log('xPos: ', this.state.bufferPosition[0], ' yPos: ', this.state.bufferPosition[1])}
+                {
+                  !this.state.pdfBase64 ? null :
+                    <MyButton btnStyles={styles.btnSaveStyle} btnText={styles.btnStyleText} text="Sign and Save!" onPress={this.editPdf} />
+                }
               </View>
           }
         </View>
@@ -128,6 +137,13 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     marginTop: '10%',
+  },
+  containerPdf: {
+    position: 'absolute',
+    marginTop: '25%',
+    marginBottom: '15%',
+    width: '90%',
+    height: '60%',
   },
   pdf: {
     height: '100%',
@@ -153,13 +169,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
     marginTop: '10%',
     marginBottom: '10%',
-  },
-  containerPdf: {
-    position: 'absolute',
-    marginTop: '25%',
-    marginBottom: '15%',
-    width: '90%',
-    height: '70%',
   },
   btnSaveStyle: {
     backgroundColor: '#75a927',
